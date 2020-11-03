@@ -1,2 +1,12 @@
-﻿  Main.cpp
-  PlumbersVsRabbidsCode.vcxproj -> E:\Work\Second Year\Game Play Programming\PlumberVsRabbits-GP-\PlumbersVsRabbidsCode\Debug\PlumbersVsRabbidsCode.exe
+﻿  Game.cpp
+E:\Work\Second Year\Game Play Programming\PlumberVsRabbits-GP-\PlumbersVsRabbidsCode\PlumbersVsRabbidsCode\Game.cpp(23,37): error C2664: 'void Game::playersTurn(Humanoid)': cannot convert argument 1 from 'Plumber *' to 'Humanoid'
+E:\Work\Second Year\Game Play Programming\PlumberVsRabbits-GP-\PlumbersVsRabbidsCode\PlumbersVsRabbidsCode\Game.cpp(23,37): message : No constructor could take the source type, or constructor overload resolution was ambiguous
+  Humanoid.cpp
+  Main.cpp
+  Plumber.cpp
+E:\Work\Second Year\Game Play Programming\PlumberVsRabbits-GP-\PlumbersVsRabbidsCode\PlumbersVsRabbidsCode\Game.h(12,7): message : see declaration of 'Game::playersTurn'
+E:\Work\Second Year\Game Play Programming\PlumberVsRabbits-GP-\PlumbersVsRabbidsCode\PlumbersVsRabbidsCode\Plumber.cpp(62,33): error C3867: 'Humanoid::getXPos': non-standard syntax; use '&' to create a pointer to member
+E:\Work\Second Year\Game Play Programming\PlumberVsRabbits-GP-\PlumbersVsRabbidsCode\PlumbersVsRabbidsCode\Plumber.cpp(62,33): error C2446: '<': no conversion from 'int' to 'int (__thiscall Humanoid::* )(void)'
+  Rabbit.cpp
+  Generating Code...
+E:\Work\Second Year\Game Play Programming\PlumberVsRabbits-GP-\PlumbersVsRabbidsCode\PlumbersVsRabbidsCode\Plumber.cpp(62,29): message : There are no conversions from integral values to pointer-to-member values

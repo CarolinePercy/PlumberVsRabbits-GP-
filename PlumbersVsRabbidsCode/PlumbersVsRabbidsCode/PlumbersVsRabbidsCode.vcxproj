@@ -123,12 +123,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Humanoid.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Plumber.cpp" />
     <ClCompile Include="Rabbit.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Humanoid.h" />
     <ClInclude Include="Plumber.h" />
     <ClInclude Include="Rabbit.h" />
