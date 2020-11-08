@@ -1,125 +1,88 @@
 #include "Game.h"
 
-Humanoid* Game::getHumanoid(int i)
-{
-	return plumbers[i];
-}
-
+/// <summary>
+/// Game contructor
+/// </summary>
 Game::Game()
 {
-	bool gameInPlay{ true };
-	bool playingPlumbers{ true };
-
-	plumbers[0] = new Plumber(20, 30, 1, "Mario");
-	plumbers[1] = new Plumber(40, 30, 3, "Luigi");
-	rabbits[0] = new Rabbit(20, 60, 2, "Rabbit Peach");
-	rabbits[1] = new Rabbit(40, 60, 4, "Rabbit Yoshi");
-
-
-	while (gameInPlay)
-	{
-		if (playingPlumbers)
-		{
-			playersTurn(*((Plumber*)plumbers[0]));
-			((Rabbit*)rabbits[0])->thoughtProcess(((Plumber*)plumbers), 2);
-		}
-	}
+	plumbers[0] = new Plumber(20, 40, "Mario");
+	plumbers[1] = new Plumber(30, 40, "Luigi");
+	rabbits[0] = new Rabbit(20, 50, "Rabbit Peach");
+	rabbits[1] = new Rabbit(30, 50, "Rabbit Yoshi");
 }
-
-void Game::playersTurn(Humanoid playerChar)
+/// <summary>
+/// Function that controls the shop menu between rounds
+/// </summary>
+void Game::shop()
 {
-	int actions = 3;
-	bool moved{ false };
-	bool attacked{ false };
-	bool shielded{ false };
-	bool healed{ false };
-	char input{ ' ' };
+	bool inShop{ true };
+	int input = -1;
 
-	std::cout << playerChar.name << "'s turn!" << std::endl;
-
-	std::cout << "To move, input 'm' (1 action)" << std::endl;
-	std::cout << "To attack, input 'a' (1-3 actions)" << std::endl;
-	std::cout << "To shield, input 's' (1-3 actions)" << std::endl;
-	std::cout << "To heal, input 'h' (1 action)" << std::endl;
-
-	while (actions > 0)
+	while (inShop) // while user stays on shop menu
 	{
-		std::cout << "You have three actions left." << std::endl;
-		
+		system("CLS");
+		std::cout << "\tSHOP" << std::endl;
+		std::cout << "1) Health increase by 10: 10 coins" << std::endl;
+		std::cout << "2) Damage increase by 5: 20 coins" << std::endl;
+		std::cout << "3) Shield increase 10: 30 coins" << std::endl;
+		std::cout << "4) Leave shop." << std::endl;
+		std::cout << "Your Wallet: " << Humanoid::coinBag.contents() << " coins."<< std::endl;
+
 		std::cin >> input;
 
-		while (input != 'm' && input != 'a' && input != 's' && input != 'h')
+		while (input < 1 || input > 4) // if user didnt input a correct number, give error
 		{
-			errorMessage();
+			Humanoid::errorMessage();
 			std::cin >> input;
 		}
+
+		switch (input) // switch is used to pass the right info into the next method
+		{
+		case 1:
+			purchase(10, 0);
+			break;
+		case 2:
+			purchase(20, 1);
+			break;
+		case 3:
+			purchase(30, 2);
+			break;
+		case 4:
+			inShop = false;
+			break;
+		default:
+			std::cout << "ERROR in shop!!" << std::endl;
+			break;
+		}
 	}
-
-
 }
 
-void Game::errorMessage()
+/// <summary>
+/// Figures out what the user is purchasing, and whether they have the coins to purchase it.
+/// </summary>
+/// <param name="purchaseCost">The cost of that product</param>
+/// <param name="whatWasPurchased">The number related to what upgrade the player bought</param>
+void Game::purchase(int purchaseCost, int whatWasPurchased)
 {
-	std::cout << "Please enter a valid command." << std::endl;
-	std::cin.clear();
-	std::cin.ignore(10000, '\n');
-}
-
-void Game::playerMove(Humanoid playerChar)
-{
-	bool correctMovement{ false };
-	int xMove;
-	int yMove;
-	bool error{ true };
-
-	std::cout << "Please input the x coordinate, then hit enter," << std::endl;
-	std::cout <<"and then enter the y coordinate to move to." << std::endl;
-
-
-	while (!correctMovement)
+	if (Humanoid::coinBag.contents() >= purchaseCost) // If the user can afford the item
 	{
-		while (error)
+		Humanoid::coinBag.buy(purchaseCost); // remove the coins from account
+		 
+		if (playingPlumbers) // if the user chose plumbers, upgrade plumbers, else upgrade rabbits
 		{
-			try
-			{
-				std::cin >> xMove;
-				error = false;
-			}
-
-			catch (int e)
-			{
-				errorMessage();
-				error = true;
-			}
-		}
-
-		error = true;
-
-		while (error)
-		{
-			try
-			{
-				std::cin >> yMove;
-				error = false;
-			}
-
-			catch (int e)
-			{
-				errorMessage();
-				error = true;
-			}
-		}
-
-		correctMovement = playerChar.withinRangeCheck(xMove, yMove);
-
-		if (correctMovement)
-		{
-			std::cout << "" << std::endl;
+			((Plumber*)plumbers[0])->upgrade((improvement)whatWasPurchased);
+			((Plumber*)plumbers[1])->upgrade((improvement)whatWasPurchased);
 		}
 
 		else
 		{
-			std::cout "" << std::endl;
+			((Rabbit*)rabbits[0])->upgrade((improvement)whatWasPurchased);
+			((Rabbit*)rabbits[1])->upgrade((improvement)whatWasPurchased);
 		}
+	}
+	else // tells user they cant afford the item
+	{
+		std::cout << "You do not have enough money for that!" << std::endl;
+		Humanoid::letUserRead();
 	}
 }

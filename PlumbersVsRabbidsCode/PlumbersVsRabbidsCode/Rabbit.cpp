@@ -4,15 +4,19 @@
 /// </summary>
 /// <param name="t_xPos">The starting x position of the rabbit</param>
 /// <param name="t_yPos">the starting y position of the rabbit</param>
-/// <param name="t_turnOrder">the turn order for the rabbit</param>
 /// <param name="t_name">the name of the rabbit</param>
-Rabbit::Rabbit(int t_xPos, int t_yPos, int t_turnOrder, std::string t_name)
+Rabbit::Rabbit(int t_xPos, int t_yPos, std::string t_name)
 {
-	health = 30;
-	xPos = t_xPos;
-	yPos = t_yPos;
-	speed = 4;
-	turnOrder = t_turnOrder;
+	totalHealth = 30;
+	roundHealth = totalHealth;
+
+	originalXPos = t_xPos;
+	xPos = originalXPos;
+
+	originalYPos = t_yPos;
+	yPos = originalYPos;
+
+	speed = 7;
 	name = t_name;
 }
 
@@ -21,46 +25,65 @@ Rabbit::Rabbit(int t_xPos, int t_yPos, int t_turnOrder, std::string t_name)
 /// </summary>
 Rabbit::Rabbit()
 {
-	health = 0;
+	roundHealth = 0;
 	xPos = 0;
 	yPos = 0;
 	speed = 0;
-	turnOrder = 0;
 	name = "";
 }
 
-void Rabbit::uniqueTurn(Humanoid enemyTeam[], int enemyIndex)
+/// <summary>
+/// Resets the values back to the original, used for new rounds
+/// </summary>
+void Rabbit::resetValues()
 {
-	move(enemyTeam[enemyIndex].getXPos(), enemyTeam[enemyIndex].getYPos());
-
-	std::cout << name << " ran up to " << enemyTeam[enemyIndex].name << " and stabbed at them!" << std::endl;
-
-	enemyTeam[enemyIndex].isHit(attackType::KNIFE);
-	hitsThrown++;
-	ability(enemyTeam[abs(enemyIndex - 1)]);
+	xPos = originalXPos;
+	yPos = originalYPos;
+	roundHealth = totalHealth;
 }
 
+/// <summary>
+/// If the character is within range of an enemy, it moves on top of it to attack, then run away
+/// </summary>
+/// <param name="enemyTeam">the enemy team</param>
+/// <param name="enemyIndex">the index of the enemy to land on</param>
+void Rabbit::uniqueTurn(Humanoid* enemyTeam[], int enemyIndex)
+{
+	xPos = enemyTeam[enemyIndex]->getXPos();
+	yPos = enemyTeam[enemyIndex]->getYPos();
+
+	std::cout << name << " ran up to " << enemyTeam[enemyIndex]->getName() << " and stabbed at them!" << std::endl;
+
+	enemyTeam[enemyIndex]->isHit(attackType::KNIFE, attackAddition);
+	ability(*enemyTeam[abs(enemyIndex - 1)]);
+}
+
+/// <summary>
+/// Rabbit's ability is hitting an enemy, then running away. This is for the running away part
+/// </summary>
+/// <param name="enemy">The enemy that the rabbit is running away from</param>
 void Rabbit::ability(Humanoid enemy)
 {
 	if (enemy.getXPos() > xPos)
 	{
-		move(xPos - 3, yPos);
+		xPos -= 3;
 	}
 
 	else if (enemy.getXPos() < xPos)
 	{
-		move(xPos + 3, yPos);
+		xPos += 3;
 	}
 
 	else if (enemy.getYPos() > yPos)
 	{
-		move(xPos, yPos - 3);
+		yPos -= 3;
 	}
 
 	else
 	{
-		move(xPos, yPos + 3);
+		yPos += 3;
 	}
 
 	std::cout << name << " hops away to (" << xPos << ", " << yPos << ")!" << std::endl;
+	letUserRead();
 }
